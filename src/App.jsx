@@ -1,15 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import 'bootstrap/dist/css/bootstrap.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage/HomePage";
+import { lazy } from 'react';
 
+const Home = lazy(() => import('./pages/Home/Home'));
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-     <p>Page airbnb</p>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='' element={<HomePage />} >
+          <Route index element={<Home />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
