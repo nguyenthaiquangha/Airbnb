@@ -1,6 +1,8 @@
 import React from 'react'
 import './Home.scss'
 import Explore from 'src/components/Explore/Explore'
+import LiveAnyWhere from '../../components/LiveAnyWhere/LiveAnyWhere'
+import ListRoom from '../../components/ListRoom/ListRoom'
 function Home() {
     return (
         <>
@@ -10,6 +12,8 @@ function Home() {
             </div>
 
             <Explore/>
+            <LiveAnyWhere />
+            <ListRoom />
         </>
 
 

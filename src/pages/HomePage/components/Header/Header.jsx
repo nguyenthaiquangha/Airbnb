@@ -13,15 +13,14 @@ function Header() {
             </div>
 
             <div className='d-flex search-container bg-white align-items-center'>
-                <input type="text" placeholder='Search place' className='text-center'
-                />
+                <input type="text" placeholder='Search place' className='text-center' style={{outline: 'none ',border: 'none'}}/>
                 <NavLink to={'/'} className="d-none d-md-inline-flex  search-icon text-black  ">
                     <MagnifyingGlassIcon />
                 </NavLink>
             </div>
             <div className='header-user d-flex justify-content-end align-items-center '>
                 <p>Đón tiếp khách</p>
-                <GlobeAltIcon className='global-icon text-white' />
+                <GlobeAltIcon className='global-icon text-black' />
                 
                 <div className='menu-user d-flex justify-content-between px-2 py-1'>
                     <Bars3Icon className='menu-icon' />

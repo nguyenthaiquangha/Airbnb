@@ -8,14 +8,14 @@ function Explore() {
     const getListExploreNear = async () => {
         try {
             const resp = await axios.get(
-                'https://airbnbnew.cybersoft.edu.vn/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8',
+                'https://airbnbnew.cybersoft.edu.vn/api/vi-tri',
                 {
                     headers: {
                         tokenCybersoft:
                             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcPDEkMOgIE7hurVuZyAwNyIsIkhldEhhblN0cmluZyI6IjA0LzExLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY5OTA1NjAwMDAwMCIsIm5iZiI6MTY2OTQ4MjAwMCwiZXhwIjoxNjk5MjAzNjAwfQ.z53DwWShTQ-NYmv_cyVwxzyaarjOV3xiMrElt3gwl8M',
                     },
                 });
-            setLocations(resp.data.content.data);
+            setLocations(resp.data.content);
 
         } catch (error) {
             alert(error);
@@ -31,7 +31,7 @@ function Explore() {
                 {locations.map((location) => (
                     <div className='location' key={location.id}>
                         <div className="image-container">
-                            <img src={location.hinhAnh} alt={location.name} />
+                            <img src={location.hinhAnh} alt={location.tenViTri} />
                         </div>
                         <div className="info-container">
                             <p className='tinhThanh'>{location.tinhThanh}</p>
