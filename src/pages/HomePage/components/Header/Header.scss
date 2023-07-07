@@ -1,0 +1,53 @@
+.header-container {
+    padding: 0 5% 0 5%;
+    background-color: #000000;
+    height: 8rem;
+
+    .header-logo {
+        width: 25%;
+    }
+
+    .search-container {
+        height: 50%;
+        width: 35%;
+
+        input {
+            height: 100%;
+            display: inline-block;
+            width: 100%;
+        }
+
+        a {
+            align-items: center;
+            height: 70%;
+            width: 7%;
+            border-radius: 5px;
+        }
+    }
+
+    .header-user {
+        height: 100%;
+        width: 30%;
+
+        p {
+            color: #ffffff;
+            padding-top: 3%;
+            padding-right: 5%;
+        }
+
+        .global-icon {
+            width: 6%;
+        }
+
+        .menu-user{
+            background-color: #ffffff;
+            width: 20%;
+            border-radius: 15px;
+            margin-left: 5%;
+            color: #808080;
+        }
+
+        
+    }
+
+}
