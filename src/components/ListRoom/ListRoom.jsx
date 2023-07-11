@@ -14,7 +14,7 @@ function ListRoom() {
             })
             setListRoom(resp.data.content);
         } catch (error) {
-            console.log('Lỗi', error);
+           alert('Lỗi', error);
         }
     }
     useEffect(() => {
