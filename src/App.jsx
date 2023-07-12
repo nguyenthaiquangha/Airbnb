@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import { lazy } from 'react';
 
 const Home = lazy(() => import('./pages/Home/Home'));
+const SearchByLocation = lazy(() => import('./pages/SearchByLocal/SearchByLocation'));
 function App() {
 
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path='' element={<HomePage />} >
           <Route index element={<Home />} />
+          <Route path='/search-by-location' element={<SearchByLocation/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

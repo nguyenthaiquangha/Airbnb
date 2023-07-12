@@ -63,12 +63,11 @@ function LiveAnyWhere() {
     return (
         <div>
             <div className='liveroom-container mx-auto'>
-                <h2>Khách sạn nổi bậc</h2>
+                <h2>Khách sạn nổi bật</h2>
                 <div className='' >
                     <Slider {...settings} >
                         {liveroom.map((room) => {
                             return (
-
                                 <>
                                     <div className='card'>
                                         <div className="card-top">
