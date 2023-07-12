@@ -5,30 +5,41 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import axios from "axios";
+import vi from "date-fns/locale/vi";
+import { useEffect, useState } from "react";
+import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { setSearch } from "src/redux/slices/Search";
 import "./Header.scss";
 import logo from "/img/airbnb.jpg";
-import { DateRangePicker } from "react-date-range";
-import vi from "date-fns/locale/vi";
-import axios from "axios";
 
-function Header({ placeholder }) {
-  const [searchInput, setSearchInput] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [numberOfGuests, setNumberOfGuests] = useState(1);
+function Header() {
+  const dispatch = useDispatch();
+  const search = useSelector((state) => state.searchReducer);
+  console.log(search);
+
+  const [searchInput, setSearchInput] = useState(search.location || "");
+  const [startDate, setStartDate] = useState(
+    search.startDate ? new Date(search.startDate) : new Date()
+  );
+  const [endDate, setEndDate] = useState(
+    search.endDate ? new Date(search.endDate) : new Date()
+  );
+  const [numberOfGuests, setNumberOfGuests] = useState(
+    search.numberOfGuests || 1
+  );
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedSuggestion, setSelectedSuggestion] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [maViTri, setMaViTri] = useState("");
 
-  const handleSearch = async (value) => {
-    setSearchInput(value);
+  const getViTri = async () => {
     try {
       const response = await axios.get(
-        `https://airbnbnew.cybersoft.edu.vn/api/vi-tri?tinhThanh=${value}`,
+        "https://airbnbnew.cybersoft.edu.vn/api/vi-tri",
         {
           headers: {
             tokenCybersoft:
@@ -36,28 +47,39 @@ function Header({ placeholder }) {
           },
         }
       );
-      const filteredSuggestions = response.data.content.filter((item) =>
-        item.tinhThanh.toLowerCase().startsWith(value.toLowerCase())
-      );
-      setSuggestions(filteredSuggestions);
-      setShowSuggestions(true);
+      const listViTri = response.data.content;
+      setSuggestions(listViTri);
     } catch (error) {
       alert(error);
     }
   };
 
+  useEffect(() => {
+    getViTri();
+  }, []);
+
+  const handleSearch = (value) => {
+    const filteredSuggestions = suggestions.filter((item) =>
+      item.tinhThanh.toLowerCase().startsWith(value.toLowerCase())
+    );
+    setSuggestions(filteredSuggestions);
+    setShowSuggestions(true);
+  };
+
   const handleSuggestionClick = (suggestion) => {
-    setSelectedSuggestion(suggestion);
-    setSearchInput(`${suggestion.tenViTri} - ${suggestion.tinhThanh}`);
+    const location = `${suggestion.tenViTri} - ${suggestion.tinhThanh}`;
+    setSearchInput(location);
     setShowSuggestions(false);
+    setMaViTri(suggestion.id);
   };
 
   const handleSelect = (ranges) => {
     setStartDate(ranges.selection.startDate);
     setEndDate(ranges.selection.endDate);
   };
-  const resetInput = () => {
-    setSearchInput("");
+  const handleNumberOfGuestsChange = (e) => {
+    const value = e.target.value;
+    setNumberOfGuests(value);
   };
 
   const selectionRange = {
@@ -65,13 +87,23 @@ function Header({ placeholder }) {
     endDate: endDate,
     key: "selection",
   };
-  const queryParams = new URLSearchParams({
-    location: searchInput,
-    startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(),
-    numberOfGuests,
-  });
-  const searchUrl = `/search-by-location?${queryParams}`;
+
+  const handleSubmit = () => {
+    dispatch(
+      setSearch({
+        location: searchInput,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        numberOfGuests,
+        maViTri,
+      })
+    );
+    clearInput();
+  };
+
+  const clearInput = () => {
+    setSearchInput("");
+  };
 
   return (
     <header>
@@ -87,7 +119,7 @@ function Header({ placeholder }) {
             value={searchInput}
             onChange={(e) => handleSearch(e.target.value)}
             type="text"
-            placeholder={placeholder}
+            placeholder="Nhập tỉnh thành"
             className="text-center"
             style={{ outline: "none ", border: "none" }}
           />
@@ -139,18 +171,18 @@ function Header({ placeholder }) {
             <UsersIcon className="user-icon" />
             <input
               value={numberOfGuests}
-              onChange={(e) => setNumberOfGuests(e.target.value)}
+              onChange={handleNumberOfGuestsChange}
               type="number"
               min={1}
               className="input-guest"
             />
           </div>
           <div className="d-flex">
-            <button onClick={resetInput} className="cancel-button">
+            <button onClick={clearInput} className="cancel-button">
               Hủy
             </button>
-            <NavLink to={searchUrl} activeClassName="active-link">
-              <button onClick={resetInput} className="search-button">
+            <NavLink to="/search-by-location" activeClassName="active-link">
+              <button onClick={handleSubmit} className="search-button">
                 Tìm kiếm
               </button>
             </NavLink>
