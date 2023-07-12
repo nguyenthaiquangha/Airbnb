@@ -5,7 +5,7 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { NavLink } from "react-router-dom";
@@ -73,6 +73,23 @@ function Header({ placeholder }) {
   });
   const searchUrl = `/search-by-location?${queryParams}`;
 
+
+
+
+  useEffect(() => {
+    document.addEventListener("click", handleInfor, true);
+  }, [])
+  const refOne = useRef();
+  
+  const handleInfor = (e) => {
+    const inforELE = document.querySelector('#infor');
+    if (!refOne.current.contains(e.target)) {
+      inforELE.style.display = 'block';
+    }else {
+      inforELE.style.display = "none";
+    }
+  }
+
   return (
     <header>
       <div className="header-container d-flex justify-content-between align-items-center">
@@ -116,12 +133,38 @@ function Header({ placeholder }) {
           <p>Đón tiếp khách</p>
           <GlobeAltIcon className="global-icon text-black" />
 
-          <div className="menu-user d-flex justify-content-between px-2 py-1">
+          <div className="menu-user d-flex justify-content-between px-2 py-1"  ref={refOne}>
             <Bars3Icon className="menu-icon" />
             <UserCircleIcon className="user-circle-icon" />
+
+            <div className="infor" id="infor" style={{ display: 'none' }}>
+              <div className="modalInfor" id="modalInfor">
+                <NavLink to={"/dangki"} className='navlink'>
+                  <a>Đăng ký</a>
+                </NavLink>
+                <NavLink to={"/dangnhap"} className='navlink'>
+                  <a>Đăng nhập</a>
+                </NavLink>
+                <NavLink to={"/thongtin"} className='navlink'>
+                  <a>Thông tin</a>
+                </NavLink>
+                <NavLink to={"/trogiup"} className='navlink'>
+                  <a>trợ giúp ?</a>
+                </NavLink>
+                <NavLink to={"/thoat"} className='navlink'>
+                  <a>Thoát</a>
+                </NavLink>
+              </div>
+            </div>
+
           </div>
+
         </div>
       </div>
+
+
+
+
 
       {searchInput && (
         <div className="date-range-container mx-auto">

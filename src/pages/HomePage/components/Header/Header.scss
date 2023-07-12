@@ -42,6 +42,7 @@
         cursor: pointer;
         margin-bottom: 1%;
       }
+
       .suggestion-item:hover {
         transform: scale(0.95);
         background-color: #d3d3d3;
@@ -69,6 +70,44 @@
       border-radius: 15px;
       margin-left: 5%;
       color: #808080;
+      cursor: pointer;
+      position: relative;
+
+      :hover {
+        #infor {
+          display: block;
+        }
+      }
+
+      .infor {
+        position: absolute;
+        width: 150px;
+        // height: 100px;
+        top: 50px;
+        right: 0;
+        background-color: #ffffff;
+        border-radius: 5px;
+        padding: 1rem;
+
+        .navlink {
+          text-decoration: none;
+
+          a {
+            color: #000000;
+            display: block;
+            text-align: left;
+            padding: 0.5rem;
+          }
+
+          :hover {
+            background-color: #dfdcdc;
+          }
+        }
+
+      }
+
+
+
     }
   }
 }
@@ -80,16 +119,19 @@
   .rdrDefinedRangesWrapper {
     display: none;
   }
+
   .user-icon {
     width: 2rem;
     height: 2rem;
     margin-left: 50%;
   }
+
   .input-guest {
     text-align: center;
     width: 4rem;
     color: #ff0000;
   }
+
   button {
     margin: 1rem;
     flex-grow: 1;
