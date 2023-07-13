@@ -1,0 +1,10 @@
+.dropdown-item {
+    display: flex;
+    margin: 1rem auto;
+}
+
+.dropdown-item .nav-link {
+    max-width: 10rem;
+    margin-left: 1rem;
+    transition: 500ms;
+}
