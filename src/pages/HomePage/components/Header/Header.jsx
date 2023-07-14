@@ -176,10 +176,10 @@ function Header() {
                   <DropdowItem src={'/login'} text={'Đăng nhập'} />
                 </li>
                 <li >
-                  <DropdowItem src={'/infor'} text={'Thông tin'} />
+                  <DropdowItem src={'/infor'} text={'Tài khoản'} />
                 </li>
                 <li >
-                  <DropdowItem src={'/about'} text={'Trợ giúp'} />
+                  <DropdowItem src={'/travel'} text={'Chuyến đi'} />
                 </li>
                 <li >
                   <DropdowItem src={'/logout'} text={'Thoát'} />

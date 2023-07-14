@@ -1,0 +1,93 @@
+.auth-form {
+    width: 45%;
+    margin: auto;
+    border: 1px solid black;
+    margin-top: 9rem;
+
+    .auth-form__container {
+        padding: 1rem 3.5rem;
+
+        .auth-form__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .auth-form__heading {
+                font-size: 2.2rem;
+                font-weight: 600;
+
+            }
+
+            .auth-form__switch-nav {
+                text-decoration: none;
+                font-size: 1.6rem;
+                font-weight: 500;
+                color: #000;
+            }
+
+            .auth-form__switch-nav:hover {
+                cursor: pointer;
+                color: rgb(212, 33, 9);
+            }
+        }
+
+        .auth-form__input {
+            width: 100%;
+            height: 4rem;
+            margin: 1.3rem 0;
+            outline: none;
+            padding: 1rem;
+            font-size: 1.4rem;
+            border: 1px solid #dbdbdb;
+            border-radius: 2px;
+        }
+
+        .auth-form__input:focus {
+            border-color: #777;
+        }
+
+        .auth-form__controls {
+            margin: 6.5rem 0 1rem 0;
+
+            .btn-register-color {
+                background-color: rgb(212, 33, 9);
+                color: #ffffff;
+            }
+        }
+
+        .auth-form__socials {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+
+            .btn-fb-color {
+                background-color: #3a5a98;
+                color: #ffffff;
+            }
+
+            .btn-gg-color {
+                // background-color: ;
+            }
+
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+            }
+        }
+    }
+}
+
+.btn__submit {
+    font-size: 1.4rem;
+    min-width: 20rem;
+    color: #000;
+    background-color: rgb(255, 255, 255);
+    padding: 0.6rem;
+    border: 1px solid #777;
+    border-radius: 2px;
+}
+
+.btn__submit:hover {
+    opacity: 0.7;
+}

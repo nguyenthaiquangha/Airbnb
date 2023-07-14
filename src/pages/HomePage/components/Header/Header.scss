@@ -1,3 +1,10 @@
+header {
+  z-index: 1;
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+}
 .header-container {
   padding: 0 5% 0 5%;
   background-color: #000000;
@@ -71,13 +78,13 @@
       margin-left: 5%;
       color: #808080;
       cursor: pointer;
+      position: relative;
       .dropdown-menu {
         width: 150px;
       }
-      position: relative;
       @media screen and (max-width: 1024px) {
         .dropdown-menu {
-         width: 200px;
+         width: 400px;
         }
       }
       @media screen and (max-width: 768px) {

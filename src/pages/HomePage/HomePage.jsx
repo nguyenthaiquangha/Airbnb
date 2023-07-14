@@ -7,7 +7,7 @@ function HomePage() {
   return (
     <Fragment>
       <Header />
-      <div>
+      <div style={{minHeight: "473px",marginTop: "8rem"}}>
         <Suspense fallback={<>Loading...</>}>
           <Outlet />
         </Suspense>
