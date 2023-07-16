@@ -3,7 +3,9 @@ import vi from "date-fns/locale/vi";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchByLocation.scss";
+import { HeartIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+import MapLocation from "src/components/LiveAnyWhere/components/MapLocation";
 
 function SearchByLocation() {
   const search = useSelector((state) => state.searchReducer);
@@ -32,12 +34,13 @@ function SearchByLocation() {
 
   useEffect(() => {
     getRoomByLocation();
-  }, []);
+  }, [maViTri]);
   return (
     <main className="container">
       <section>
         <p>
-          Có {listRoom.length} chỗ ở • {startDate} - {endDate} • {search.numberOfGuests} khách
+          Có {listRoom.length} chỗ ở • {startDate} - {endDate} •{" "}
+          {search.numberOfGuests} khách
         </p>
 
         <h1>Chỗ ở tại khu vực bản đồ đã chọn</h1>
@@ -49,28 +52,42 @@ function SearchByLocation() {
           <button>Phòng và phòng ngủ</button>
           <button>Bộ lọc khác</button>
         </div>
-
-        <div className='room-list'>
-        {listRoom.map(room => (
-          <div key={room.id} className='room-item'>
-            <img src={room.hinhAnh} alt=".." />
-            <h2>{room.tenPhong}</h2>
-            <p>{room.description}</p>
-            <p>{room.khach} khách</p>
-            <p>{room.giuong} giường</p>
-            <p>{room.phongTam} phòng tắm</p>
-            {room.mayGiat && <p>Máy giặt</p>}
-            {room.banLa && <p>Bàn là</p>}
-            {room.tivi && <p>Ti vi</p>}
-            {room.wifi && <p>Wifi</p>}
-            {room.bep && <p>Bếp</p>}
-            {room.doXe && <p>Đỗ xe</p>}
-            {room.hoBoi && <p>Hồ bơi</p>}
-            {room.banUi && <p>Bàn ủi</p>}
-            <p>{room.giaTien}$/ngày </p>
+        <div className="row">
+          <div className="room-list col-8">
+            {listRoom.map((room) => (
+              <div key={room.id} className="room-item row">
+                <div className="col-4 left">
+                  <img src={room.hinhAnh} alt=".." />
+                </div>
+                <div className="col-8 right">
+                  <div className="d-flex justify-content-between">
+                    <h2>{room.tenPhong}</h2>
+                    <HeartIcon className="heart-icon" />
+                  </div>
+                  <span>
+                    {room.khach} khách • {room.giuong} giường • {room.phongTam}{" "}
+                    phòng tắm
+                  </span>
+                  <br />
+                  {room.mayGiat && <span>Máy giặt</span>}
+                  {room.banLa && <span> • Bàn là</span>}
+                  {room.tivi && <span> • Ti vi</span>}
+                  {room.wifi && <span> • Wifi</span>}
+                  {room.bep && <span> • Bếp</span>}
+                  {room.doXe && <span> • Đỗ xe</span>}
+                  {room.hoBoi && <span> • Hồ bơi</span>}
+                  {room.banUi && <span> • Bàn ủi</span>}
+                  <p>
+                    <span>${room.giaTien}</span>/đêm
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <div className="col-4 map-container">
+            <MapLocation />
+          </div>
+        </div>
       </section>
     </main>
   );

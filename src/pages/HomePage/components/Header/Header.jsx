@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import axios from "axios";
 import vi from "date-fns/locale/vi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -16,6 +16,7 @@ import { NavLink } from "react-router-dom";
 import { setSearch } from "src/redux/slices/Search";
 import "./Header.scss";
 import logo from "/img/airbnb.jpg";
+import { deburr } from "lodash";
 
 function Header() {
   const dispatch = useDispatch();
@@ -32,9 +33,11 @@ function Header() {
   const [numberOfGuests, setNumberOfGuests] = useState(
     search.numberOfGuests || 1
   );
-  const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [maViTri, setMaViTri] = useState("");
+  // const [keyword, setKeyword] = useState("");
+  const [allSuggestions, setAllSuggestions] = useState([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
   const getViTri = async () => {
     try {
@@ -48,7 +51,7 @@ function Header() {
         }
       );
       const listViTri = response.data.content;
-      setSuggestions(listViTri);
+      setAllSuggestions(listViTri);
     } catch (error) {
       alert(error);
     }
@@ -57,12 +60,14 @@ function Header() {
   useEffect(() => {
     getViTri();
   }, []);
-
   const handleSearch = (value) => {
-    const filteredSuggestions = suggestions.filter((item) =>
-      item.tinhThanh.toLowerCase().startsWith(value.toLowerCase())
+    setSearchInput(value);
+    const filteredSuggestions = allSuggestions.filter((item) =>
+      deburr(item.tinhThanh.toLowerCase()).startsWith(
+        deburr(value.toLowerCase())
+      )
     );
-    setSuggestions(filteredSuggestions);
+    setFilteredSuggestions(filteredSuggestions);
     setShowSuggestions(true);
   };
 
@@ -87,23 +92,38 @@ function Header() {
     endDate: endDate,
     key: "selection",
   };
+  dispatch(
+    setSearch({
+      location: searchInput,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      numberOfGuests,
+      maViTri,
+    })
+  );
 
   const handleSubmit = () => {
-    dispatch(
-      setSearch({
-        location: searchInput,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        numberOfGuests,
-        maViTri,
-      })
-    );
     clearInput();
   };
 
   const clearInput = () => {
     setSearchInput("");
   };
+  const suggestionsRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header>
@@ -131,8 +151,8 @@ function Header() {
           </NavLink>
 
           {showSuggestions && (
-            <div className="suggestions-container">
-              {suggestions.map((suggestion) => (
+            <div className="suggestions-container" ref={suggestionsRef}>
+              {filteredSuggestions.map((suggestion) => (
                 <div
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}

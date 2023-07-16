@@ -19,4 +19,53 @@ main {
       background-color: #d3d3d3;
     }
   }
+
+  .row {
+    margin-top: 2rem;
+    .col-8 {
+      .left {
+        img {
+          width: 100%;
+        }
+      }
+      .right {
+        .heart-icon {
+          width: 3rem;
+          height: 3rem;
+          color: #000000;
+          cursor: pointer;
+        }
+        p {
+          text-align: end;
+          font-size: 2rem;
+          span {
+            font-weight: 800;
+          }
+        }
+      }
+    }
+    .map-container {
+      height: 100vh;
+      .mapboxgl-map {
+        cursor: pointer;
+        .mapboxgl-control-container {
+          display: none;
+        }
+        .mapboxgl-children {
+          display: none;
+        }
+      }
+    }
+  }
 }
+
+
+@media (max-width: 768px) {
+  .room-list{
+    width: 100%;
+  }
+  .map-container {
+    display: none;
+  }
+}
+
