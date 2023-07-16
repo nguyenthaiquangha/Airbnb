@@ -1,20 +1,23 @@
 import { format } from "date-fns";
 import vi from "date-fns/locale/vi";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./SearchByLocation.scss";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import MapLocation from "src/components/LiveAnyWhere/components/MapLocation";
+import { setListRoom } from 'src/redux/slices/RoomByLocation';
 
 function SearchByLocation() {
+  const dispatch = useDispatch();
+  const listRoom = useSelector((state) => state.roomByLocationReducer.listRoom);
+
   const search = useSelector((state) => state.searchReducer);
   const startDate = format(new Date(search.startDate), "dd MMMM", {
     locale: vi,
   });
   const endDate = format(new Date(search.endDate), "dd MMMM", { locale: vi });
   const maViTri = useSelector((state) => state.searchReducer.maViTri);
-  const [listRoom, setListRoom] = useState([]);
   const getRoomByLocation = async () => {
     try {
       const response = await axios.get(
@@ -26,7 +29,7 @@ function SearchByLocation() {
           },
         }
       );
-      setListRoom(response.data.content);
+      dispatch(setListRoom(response.data.content));
     } catch (error) {
       alert(error);
     }

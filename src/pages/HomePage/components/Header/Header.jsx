@@ -21,8 +21,6 @@ import { deburr } from "lodash";
 function Header() {
   const dispatch = useDispatch();
   const search = useSelector((state) => state.searchReducer);
-  console.log(search);
-
   const [searchInput, setSearchInput] = useState(search.location || "");
   const [startDate, setStartDate] = useState(
     search.startDate ? new Date(search.startDate) : new Date()
