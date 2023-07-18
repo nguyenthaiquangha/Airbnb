@@ -1,7 +1,7 @@
 .header-container {
   padding: 0 5% 0 5%;
   background-color: #000000;
-  height: 8rem;
+  height: auto;
 
   .header-logo {
     width: 25%;
@@ -50,7 +50,7 @@
   }
 
   .header-user {
-    height: 100%;
+    height: auto;
     width: 30%;
 
     p {
@@ -62,13 +62,40 @@
     .global-icon {
       width: 6%;
     }
+    .user-block {
+      margin-left: 1rem;
+      margin-right: 1rem;
+      width: 7rem;
+      height: 3rem;
+      position: relative;
+      .menu-user {
+        background-color: #ffffff;
+        width: 100%;
+        border-radius: 15px;
+        margin-left: 5%;
+        color: #808080;
+        cursor: pointer;
+      }
+      .dropdown-content {
+        position: absolute;
+        margin-top: 1rem;
+        left: -1rem;
+        background-color: white;
+        width: 10rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        max-height: 200px;
+        overflow-y: auto;
+        text-align: center;
 
-    .menu-user {
-      background-color: #ffffff;
-      width: 20%;
-      border-radius: 15px;
-      margin-left: 5%;
-      color: #808080;
+        // .access-link {
+        //   transform: scale(0.95);
+        //   background-color: #d3d3d3;
+        // }
+      }
     }
   }
 }

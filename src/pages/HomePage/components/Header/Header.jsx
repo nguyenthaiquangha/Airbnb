@@ -17,6 +17,8 @@ import { setSearch } from "src/redux/slices/Search";
 import "./Header.scss";
 import logo from "/img/airbnb.jpg";
 import { deburr } from "lodash";
+import { tokenCybersoft } from "src/constant";
+import { logout } from "src/redux/slices/Authentication";
 
 function Header() {
   const dispatch = useDispatch();
@@ -33,7 +35,6 @@ function Header() {
   );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [maViTri, setMaViTri] = useState("");
-  // const [keyword, setKeyword] = useState("");
   const [allSuggestions, setAllSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
@@ -43,8 +44,7 @@ function Header() {
         "https://airbnbnew.cybersoft.edu.vn/api/vi-tri",
         {
           headers: {
-            tokenCybersoft:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcPDEkMOgIE7hurVuZyAwNyIsIkhldEhhblN0cmluZyI6IjA0LzExLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY5OTA1NjAwMDAwMCIsIm5iZiI6MTY2OTQ4MjAwMCwiZXhwIjoxNjk5MjAzNjAwfQ.z53DwWShTQ-NYmv_cyVwxzyaarjOV3xiMrElt3gwl8M",
+            tokenCybersoft: tokenCybersoft,
           },
         }
       );
@@ -57,7 +57,7 @@ function Header() {
 
   useEffect(() => {
     getViTri();
-  }, []);
+  }, [searchInput]);
   const handleSearch = (value) => {
     setSearchInput(value);
     const filteredSuggestions = allSuggestions.filter((item) =>
@@ -90,17 +90,17 @@ function Header() {
     endDate: endDate,
     key: "selection",
   };
-  dispatch(
-    setSearch({
-      location: searchInput,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      numberOfGuests,
-      maViTri,
-    })
-  );
 
   const handleSubmit = () => {
+    dispatch(
+      setSearch({
+        location: searchInput,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        numberOfGuests,
+        maViTri,
+      })
+    );
     clearInput();
   };
 
@@ -110,7 +110,10 @@ function Header() {
   const suggestionsRef = useRef(null);
 
   const handleClickOutside = (event) => {
-    if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+    if (
+      suggestionsRef.current &&
+      !suggestionsRef.current.contains(event.target)
+    ) {
       setShowSuggestions(false);
     }
   };
@@ -123,9 +126,26 @@ function Header() {
     };
   }, []);
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLinkClick = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const isLoggedIn = useSelector((state) => state.AuthReducer.isLoggedIn);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setIsDropdownOpen(false);
+  };
+
   return (
     <header>
-      <div className="header-container d-flex justify-content-between align-items-center">
+      <div className="header-container d-flex justify-content-between align-items-center py-3">
         <div className="header-logo">
           <NavLink to={"/"}>
             <img className="logo-img w-50" src={logo} alt="logo" />
@@ -163,12 +183,50 @@ function Header() {
           )}
         </div>
         <div className="header-user d-flex justify-content-end align-items-center ">
-          <p>Đón tiếp khách</p>
-          <GlobeAltIcon className="global-icon text-black" />
+          {isLoggedIn ? <p>Chào mừng quý khách</p> : <p>Đón tiếp khách</p> }
 
-          <div className="menu-user d-flex justify-content-between px-2 py-1">
-            <Bars3Icon className="menu-icon" />
-            <UserCircleIcon className="user-circle-icon" />
+          <GlobeAltIcon className="global-icon text-white" />
+          <div className="user-block">
+            <div
+              className="menu-user d-flex justify-content-between px-2 py-1"
+              onClick={handleToggleDropdown}
+            >
+              <Bars3Icon className="menu-icon" />
+              <UserCircleIcon className="user-circle-icon" />
+            </div>
+
+            {isDropdownOpen && (
+              <div className="dropdown-content">
+                {isLoggedIn ? (
+                  <NavLink
+                    to={"/"}
+                    className="text-decoration-none text-black access-link"
+                    onClick={handleLogout}
+                  >
+                    Đăng xuất
+                  </NavLink>
+                ) : (
+                  <>
+                    <NavLink
+                      to={"/register"}
+                      className="text-decoration-none text-black access-link"
+                      onClick={handleLinkClick}
+                    >
+                      Đăng ký
+                    </NavLink>
+                    <br />
+                    <NavLink
+                      to={"/login"}
+                      className="text-decoration-none text-black access-link"
+                      onClick={handleLinkClick}
+                    >
+                      Đăng nhập
+                    </NavLink>
+                  </>
+                )}
+                <div></div>
+              </div>
+            )}
           </div>
         </div>
       </div>

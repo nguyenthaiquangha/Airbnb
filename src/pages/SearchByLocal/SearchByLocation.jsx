@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import "./SearchByLocation.scss";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
-import MapLocation from "src/components/LiveAnyWhere/components/MapLocation";
 import { setListRoom } from 'src/redux/slices/RoomByLocation';
+import { tokenCybersoft } from "src/constant";
+import MapLocation from "./components/MapLocation";
 
 function SearchByLocation() {
   const dispatch = useDispatch();
@@ -24,8 +25,7 @@ function SearchByLocation() {
         `https://airbnbnew.cybersoft.edu.vn/api/phong-thue/lay-phong-theo-vi-tri?maViTri=${maViTri}`,
         {
           headers: {
-            tokenCybersoft:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcPDEkMOgIE7hurVuZyAwNyIsIkhldEhhblN0cmluZyI6IjA0LzExLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY5OTA1NjAwMDAwMCIsIm5iZiI6MTY2OTQ4MjAwMCwiZXhwIjoxNjk5MjAzNjAwfQ.z53DwWShTQ-NYmv_cyVwxzyaarjOV3xiMrElt3gwl8M",
+            tokenCybersoft: tokenCybersoft,
           },
         }
       );
