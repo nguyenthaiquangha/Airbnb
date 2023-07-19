@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import searchReducer from './slices/Search';
-import userReducer from './slices/userReducer';
-import loginReducer from './slices/loginReducer'
+import roomByLocationReducer from './slices/RoomByLocation'
+import AuthReducer from './slices/Authentication'
 const store = configureStore({
   reducer: {
     searchReducer,
-    userReducer,
-    loginReducer,
+    roomByLocationReducer,
+    AuthReducer,
   },
 });
 

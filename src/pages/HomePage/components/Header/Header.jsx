@@ -16,13 +16,13 @@ import { NavLink } from "react-router-dom";
 import { setSearch } from "src/redux/slices/Search";
 import "./Header.scss";
 import logo from "/img/airbnb.jpg";
-import DropdowItem from "./DropdowItem/DropdowItem";
+import { deburr } from "lodash";
+import { tokenCybersoft } from "src/constant";
+import { logout } from "src/redux/slices/Authentication";
 
 function Header() {
   const dispatch = useDispatch();
   const search = useSelector((state) => state.searchReducer);
-  console.log(search);
-
   const [searchInput, setSearchInput] = useState(search.location || "");
   const [startDate, setStartDate] = useState(
     search.startDate ? new Date(search.startDate) : new Date()
@@ -33,23 +33,8 @@ function Header() {
   const [numberOfGuests, setNumberOfGuests] = useState(
     search.numberOfGuests || 1
   );
-  const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [maViTri, setMaViTri] = useState("");
-
-// handle open infor user
-  const [open, setOpen] = useState(false)
-  let memuRef = useRef()
-  useEffect(() => {
-    let handlerOpenInfor = (e) => {
-      if (!memuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handlerOpenInfor)
-  },[])
-
-
 
   const getViTri = async () => {
     try {
@@ -57,13 +42,12 @@ function Header() {
         "https://airbnbnew.cybersoft.edu.vn/api/vi-tri",
         {
           headers: {
-            tokenCybersoft:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcPDEkMOgIE7hurVuZyAwNyIsIkhldEhhblN0cmluZyI6IjA0LzExLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY5OTA1NjAwMDAwMCIsIm5iZiI6MTY2OTQ4MjAwMCwiZXhwIjoxNjk5MjAzNjAwfQ.z53DwWShTQ-NYmv_cyVwxzyaarjOV3xiMrElt3gwl8M",
+            tokenCybersoft: tokenCybersoft,
           },
         }
       );
       const listViTri = response.data.content;
-      setSuggestions(listViTri);
+      setAllSuggestions(listViTri);
     } catch (error) {
       alert(error);
     }
@@ -71,13 +55,15 @@ function Header() {
 
   useEffect(() => {
     getViTri();
-  }, []);
-
+  }, [searchInput]);
   const handleSearch = (value) => {
-    const filteredSuggestions = suggestions.filter((item) =>
-      item.tinhThanh.toLowerCase().startsWith(value.toLowerCase())
+    setSearchInput(value);
+    const filteredSuggestions = allSuggestions.filter((item) =>
+      deburr(item.tinhThanh.toLowerCase()).startsWith(
+        deburr(value.toLowerCase())
+      )
     );
-    setSuggestions(filteredSuggestions);
+    setFilteredSuggestions(filteredSuggestions);
     setShowSuggestions(true);
   };
 
@@ -119,10 +105,45 @@ function Header() {
   const clearInput = () => {
     setSearchInput("");
   };
+  const suggestionsRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (
+      suggestionsRef.current &&
+      !suggestionsRef.current.contains(event.target)
+    ) {
+      setShowSuggestions(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLinkClick = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const isLoggedIn = useSelector((state) => state.AuthReducer.isLoggedIn);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setIsDropdownOpen(false);
+  };
 
   return (
     <header>
-      <div className="header-container d-flex justify-content-between align-items-center">
+      <div className="header-container d-flex justify-content-between align-items-center py-3">
         <div className="header-logo">
           <NavLink to={"/"}>
             <img className="logo-img w-50" src={logo} alt="logo" />
@@ -146,8 +167,8 @@ function Header() {
           </NavLink>
 
           {showSuggestions && (
-            <div className="suggestions-container">
-              {suggestions.map((suggestion) => (
+            <div className="suggestions-container" ref={suggestionsRef}>
+              {filteredSuggestions.map((suggestion) => (
                 <div
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}
@@ -160,35 +181,12 @@ function Header() {
           )}
         </div>
         <div className="header-user d-flex justify-content-end align-items-center ">
-          <p>Đón tiếp khách</p>
-          <GlobeAltIcon className="global-icon text-black" />
+          {isLoggedIn ? <p>Chào mừng quý khách</p> : <p>Đón tiếp khách</p> }
 
-          <div className="menu-user d-flex justify-content-between px-2 py-1" ref={memuRef} onClick={() => { setOpen(!open) }} >
+          <div className="menu-user d-flex justify-content-between px-2 py-1">
             <Bars3Icon className="menu-icon" />
             <UserCircleIcon className="user-circle-icon" />
-
-            <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} style={{ display: 'block', position: 'absolute', top: '50px', right: '0', padding: '1rem 0', }}>
-              <ul>
-                <li>
-                  <DropdowItem src={'/register'} text={'Đăng kí'} />
-                </li>
-                <li >
-                  <DropdowItem src={'/login'} text={'Đăng nhập'} />
-                </li>
-                <li >
-                  <DropdowItem src={'/infor'} text={'Tài khoản'} />
-                </li>
-                <li >
-                  <DropdowItem src={'/travel'} text={'Chuyến đi'} />
-                </li>
-                <li >
-                  <DropdowItem src={'/logout'} text={'Thoát'} />
-                </li>
-              </ul>
-            </div>
-
           </div>
-
         </div>
       </div>
 

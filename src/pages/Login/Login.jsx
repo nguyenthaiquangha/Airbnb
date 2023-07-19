@@ -1,92 +1,116 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { getListUser } from '../../redux/slices/userReducer';
-import { loginUser } from '../../redux/slices/apiRequest';
+import { useFormik } from "formik";
+import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { tokenCybersoft } from "src/constant";
+import axios from "axios";
+import './Login.scss'
+import { loginSuccess } from 'src/redux/slices/Authentication';
+import { useDispatch } from "react-redux";
 
+const schemaLogin = Yup.object({
+  email: Yup.string().email("Email chưa hợp lệ").required("Yêu cầu nhập email"),
+  password: Yup.string()
+    .required("Yêu cầu nhập mật khẩu")
+    .min(6, "Mật khẩu tối thiểu 6 ký tự")
+    .max(20, "Mật khẩu tối đa 20 ký tự"),
+
+});
 function Login() {
-  // state
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [email, setEmail] = useState("")
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
 
-  // danh sách tài khoản
-  const getUser = async () => {
-    const rs = await axios.get('https://airbnbnew.cybersoft.edu.vn/api/users', {
-      headers: {
-        tokenCybersoft:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcPDEkMOgIE7hurVuZyAwNyIsIkhldEhhblN0cmluZyI6IjA0LzExLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY5OTA1NjAwMDAwMCIsIm5iZiI6MTY2OTQ4MjAwMCwiZXhwIjoxNjk5MjAzNjAwfQ.z53DwWShTQ-NYmv_cyVwxzyaarjOV3xiMrElt3gwl8M',
-      },
-    });
-    const action = getListUser(rs.data.content)
-    dispatch(action)
-  }
-  useEffect(() => {
-    getUser();
-  }, [])
-
-
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const newUser = {
-      // phone: phone,
-      // password: password
-      email: email
-    };
-    loginUser(newUser, dispatch, navigate)    
-  }
+    validationSchema: schemaLogin,
+    onSubmit: async (values) => {
+      try {
+        console.log({ values });
+        const resp = await axios.post(
+          "https://airbnbnew.cybersoft.edu.vn/api/auth/signin",
+          {
+            password: values.password,
+            email: values.email,
+          }, 
+          {
+            headers: {
+              tokenCybersoft: tokenCybersoft,
+            },
+          }
+        );
+        dispatch(loginSuccess(resp.data.content.tokenCybersoft));
+        console.log({ resp });
+        navigate("/");
+      } catch (err) {
+        if (err.response && err.response.status === 400) {
+            const errorMessage = err.response.data.content;
+            alert(errorMessage);
+          } else {
+            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+          }
+      }
+    },
+  });
   return (
-    <div className='auth-form'>
-      <div className="auth-form__container">
-        <div className="auth-form__header">
-          <h3 className='auth-form__heading'>Đăng nhập</h3>
-          <NavLink to={'/register'} className='auth-form__switch-nav'>Chưa có tài khoản!</NavLink>
+    <section className="container">
+      <h1 className="login-title text-center">Đăng nhập</h1>
+      <form className='login-form' onSubmit={formik.handleSubmit}>
+        <div className="row email-content">
+          <div className="col-3"></div>
+          <div className="col-6">
+            <div >
+              <label>Email</label>
+              <br />
+              <input type='text' name='email' {...formik.getFieldProps('email')} />
+              {formik.errors.email && formik.touched.email && (
+                <p>{formik.errors.email}</p>
+              )}
+            </div>
+          </div>
+          <div className="col-3"></div>
         </div>
 
-        <div className="auth-form__form">
-          <form  onSubmit={handleLogin}>
-            {/* <div className="auth-form__group">
-              <input type='number' className="auth-form__input" placeholder='Nhập số điện thoại' onChange={(e) => { setPhone(e.target.value) }} />
+        <div className="row password-content">
+          <div className="col-3"></div>
+          <div className="col-6">
+            <div >
+              <label>Password</label>
+              <br />
+              <div className="password-input-container">
+                <input
+                  type='password'
+                  name='password'
+                  {...formik.getFieldProps('password')}
+                />
+              </div>
+              {formik.errors.password && formik.touched.password && (
+                <p>{formik.errors.password}</p>
+              )}
             </div>
-            <div className="auth-form__group">
-              <input type='password' className="auth-form__input" placeholder='Nhập password' onChange={(e) => { setPassword(e.target.value) }} />
-            </div> */}
-
-            <div className="auth-form__group">
-              <input type='email' className="auth-form__input" name='email' placeholder='Nhập email' onChange={(e) => { setEmail(e.target.value) }} />
-            </div>
-
-            <div className="auth-form__controls" style={{ marginTop: '0' }}>
-              <button className='btn__submit btn-register-color'>Đăng nhập</button>
-            </div>
-
-            {/* <div className="auth-form__socials">
-
-              <a href="" className='btn__submit btn-fb-color'>
-                <i className="fa-brands fa-square-facebook"></i>
-                Đăng nhập với Facebook
-              </a>
-
-              <a href="" className='btn__submit btn-gg-color'>
-                <i className="fa-brands fa-google"></i>
-                Đăng ký nhập Google
-              </a>
-
-            </div> */}
-          </form>
+          </div>
+          <div className="col-3"></div>
         </div>
 
-      </div>
+        <div className="row submit-handle">
+          <div className="col-3"></div>
+          <div className="col-6 d-flex justify-content-end">
+            <NavLink to={'/register'} className='register-link'>
+                Đăng ký ngay?
+            </NavLink>
+            <button className='btn-login' type='submit'>Đăng nhập</button>
+          </div>
+          <div className="col-3"></div>
+        </div>
 
-    </div>
-  )
+
+
+      </form>
+    </section>
+  );
 }
 
-export default Login
+export default Login;
